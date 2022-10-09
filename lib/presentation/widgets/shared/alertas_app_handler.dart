@@ -1,6 +1,6 @@
 import 'package:easylanche/core/utils/alert_utils.dart';
-import 'package:easylanche/logic/alertas_app/alertas_app_cubit.dart';
-import 'package:easylanche/logic/alertas_app/alertas_app_state.dart';
+import 'package:easylanche/logic/cubits/alertas_app/alertas_app_cubit.dart';
+import 'package:easylanche/logic/cubits/alertas_app/alertas_app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -18,7 +18,9 @@ class AlertasAppHandler extends StatelessWidget {
     return BlocProvider.value(
       value: GetIt.I.get<AlertasAppCubit>(),
       child: BlocListener<AlertasAppCubit, AlertasAppState>(
-        listenWhen: (_, state) => state is AlertaSnackBarEmitidoState,
+        listenWhen: (_, state) {
+          return state is AlertaSnackBarEmitidoState;
+        },
         listener: (ctx, state) {
           AlertUtils.mostrarSnackBar(
             ctx,
@@ -32,4 +34,3 @@ class AlertasAppHandler extends StatelessWidget {
     );
   }
 }
-
