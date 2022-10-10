@@ -40,7 +40,11 @@ class _FeedPageState extends State<FeedPage> {
         },
         child: BlocBuilder<ListagemOfertaCubit, ListagemOfertaState>(
           builder: (context, state) {
-            if (state is ErroAoListarOfertasState) {}
+            if (state is ErroAoListarOfertasState) {
+              return Center(
+                child: Text('Erro ao exibir ofertas'),
+              );
+            }
             if (state is ListandoOfertasState) {
               return Container(
                 padding: EdgeInsets.fromLTRB(12, 16, 12, 32),
@@ -50,10 +54,10 @@ class _FeedPageState extends State<FeedPage> {
                   children: List.generate(
                     5,
                     (index) => Container(
-                      padding: const EdgeInsets.only(bottom: 5),
+                      padding: const EdgeInsets.only(bottom: 12),
                       child: CardOfertaWidget(
                         titulo: 'oferta.nome',
-                        descricao: 'oferta.descricao',
+                        subtitulo: 'oferta.descricao',
                         valor: 5,
                         isCarregando: true,
                       ),
@@ -76,10 +80,10 @@ class _FeedPageState extends State<FeedPage> {
                         itemBuilder: (ctx, index) {
                           final oferta = state.ofertas[index];
                           return Container(
-                            padding: const EdgeInsets.only(bottom: 5),
+                            padding: const EdgeInsets.only(bottom: 12),
                             child: CardOfertaWidget(
-                              titulo: oferta.nome,
-                              descricao: oferta.descricao,
+                              titulo: oferta.descricao,
+                              subtitulo: 'Vendido por ' + oferta.nome,
                               valor: oferta.valor,
                             ),
                           );

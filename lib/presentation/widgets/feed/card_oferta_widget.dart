@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 class CardOfertaWidget extends StatelessWidget {
   final String? titulo;
-  final String? descricao;
+  final String? subtitulo;
   final double? valor;
   final bool isCarregando;
 
   const CardOfertaWidget({
     required this.titulo,
-    required this.descricao,
+    required this.subtitulo,
     required this.valor,
     this.isCarregando = false,
   });
@@ -23,10 +23,17 @@ class CardOfertaWidget extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
-            child: Image.asset(
-              'assets/images/salgado.jpg',
+            child: SizedBox(
               width: 100,
               height: 100,
+              child: FittedBox(
+                  child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Icon(
+                  Icons.fastfood,
+                  color: Colors.grey,
+                ),
+              )),
             ),
           ),
           Expanded(
@@ -54,7 +61,7 @@ class CardOfertaWidget extends StatelessWidget {
                   isCarregando
                       ? BarraCinzaWidget(altura: 14, largura: 140)
                       : Text(
-                          descricao!,
+                          subtitulo!,
                           style: TextStyle(
                             color: Colors.grey[400],
                             fontWeight: FontWeight.bold,

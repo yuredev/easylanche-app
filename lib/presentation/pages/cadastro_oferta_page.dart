@@ -41,10 +41,7 @@ class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
   Widget buildFormularioFromEtapa() {
     switch (_etapa) {
       case 1:
-        // if (descricao != null) descricaoCtrl.text = descricao!;
-        // if (valor != null) valorCtrl.text = valor!;
         return FormularioOfertaWidget(
-          nomeCtrl: nomeOfertaCtrl,
           chaveFormulario: chaveFormOferta,
           descricaoCtrl: descricaoCtrl,
           valorCtrl: valorCtrl,
@@ -57,8 +54,6 @@ class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
           },
         );
       case 2:
-        // if (nome != null) nomeCtrl.text = nome!;
-        // if (telefone != null) telefoneCtrl.text = telefone!;
         return FormularioInfoPessoaisWidget(
           nomeCtrl: nomeCtrl,
           telefoneCtrl: telefoneCtrl,
@@ -85,7 +80,7 @@ class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
     if (chaveFormInfoPessoais.currentState!.validate()) {
       context.read<SubmissaoOfertaCubit>().cadastrar(
             Oferta(
-              nome: nomeOfertaCtrl.text,
+              nome: nomeCtrl.text,
               telefone: telefoneCtrl.text,
               descricao: descricaoCtrl.text,
               tipo: tipoOfertaSelecionado!,

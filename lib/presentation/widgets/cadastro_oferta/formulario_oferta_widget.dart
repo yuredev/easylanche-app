@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 class FormularioOfertaWidget extends StatefulWidget {
   final TextEditingController descricaoCtrl;
-  final TextEditingController nomeCtrl;
   final TextEditingController valorCtrl;
   final TipoOferta? tipoOferta;
   final void Function(TipoOferta? tipo) aoAlterarTipoOferta;
@@ -18,7 +17,6 @@ class FormularioOfertaWidget extends StatefulWidget {
     Key? key,
     required this.chaveFormulario,
     required this.descricaoCtrl,
-    required this.nomeCtrl,
     required this.tipoOferta,
     required this.valorCtrl,
     required this.aoAlterarTipoOferta,
@@ -44,23 +42,6 @@ class _FormularioOfertaWidgetState extends State<FormularioOfertaWidget> {
               style: TextStyle(
                 fontWeight: FontWeight.w500,
               ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 24),
-            child: CampoTextoWidget(
-              textoLabel: "Nome",
-              aoAlterar: (String? v) {},
-              validador: (nome) {
-                if (nome == null || nome.isEmpty) {
-                  return 'Informe seu nome';
-                }
-                return null;
-              },
-              controlador: widget.nomeCtrl,
-              tipo: TextInputType.name,
-              raioBorda: 8,
-              acaoTeclado: TextInputAction.next,
             ),
           ),
           Container(
