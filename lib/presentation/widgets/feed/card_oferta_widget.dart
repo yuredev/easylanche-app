@@ -1,3 +1,4 @@
+import 'package:easylanche/core/enums.dart';
 import 'package:easylanche/presentation/widgets/shared/barra_cinza_widget.dart';
 import 'package:easylanche/presentation/widgets/shared/shimmer_widget.dart';
 import 'package:flutter/material.dart';
@@ -6,12 +7,14 @@ class CardOfertaWidget extends StatelessWidget {
   final String? titulo;
   final String? subtitulo;
   final double? valor;
+  final TipoOferta? tipoOferta;
   final bool isCarregando;
 
   const CardOfertaWidget({
     required this.titulo,
     required this.subtitulo,
     required this.valor,
+    this.tipoOferta,
     this.isCarregando = false,
   });
 
@@ -27,13 +30,17 @@ class CardOfertaWidget extends StatelessWidget {
               width: 100,
               height: 100,
               child: FittedBox(
-                  child: Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(
-                  Icons.fastfood,
-                  color: Colors.grey,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: CircleAvatar(
+                    backgroundImage: AssetImage(
+                      tipoOferta == TipoOferta.salgado
+                          ? 'assets/images/salgado.jpg'
+                          : 'assets/images/doce.png',
+                    ),
+                  ),
                 ),
-              )),
+              ),
             ),
           ),
           Expanded(

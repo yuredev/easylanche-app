@@ -47,7 +47,7 @@ class _FeedPageState extends State<FeedPage> {
             }
             if (state is ListandoOfertasState) {
               return Container(
-                padding: EdgeInsets.fromLTRB(12, 16, 12, 32),
+                padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
                 child: ListView(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
@@ -72,7 +72,7 @@ class _FeedPageState extends State<FeedPage> {
                       child: Text("Nenhuma Postagem"),
                     )
                   : Container(
-                      padding: EdgeInsets.fromLTRB(12, 16, 12, 32),
+                      padding: EdgeInsets.fromLTRB(16, 16, 16, 32),
                       child: ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -85,6 +85,7 @@ class _FeedPageState extends State<FeedPage> {
                               titulo: oferta.descricao,
                               subtitulo: 'Vendido por ' + oferta.nome,
                               valor: oferta.valor,
+                              tipoOferta: oferta.tipo,
                             ),
                           );
                         },

@@ -10,7 +10,6 @@ class Oferta {
   final String telefone;
   final String nome;
   final String descricao;
-  @JsonKey(ignore: true)
   final TipoOferta tipo;
   @JsonKey(name: 'status')
   final bool isAtivo;
@@ -21,7 +20,7 @@ class Oferta {
     required this.telefone,
     required this.nome, 
     required this.descricao,
-    this.tipo = TipoOferta.outro,
+    required this.tipo,
     required this.isAtivo,
     required this.valor,
   });
