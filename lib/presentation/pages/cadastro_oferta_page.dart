@@ -85,6 +85,7 @@ class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
     if (chaveFormInfoPessoais.currentState!.validate()) {
       context.read<SubmissaoOfertaCubit>().cadastrar(
             Oferta(
+              nome: nomeOfertaCtrl.text,
               telefone: telefoneCtrl.text,
               descricao: descricaoCtrl.text,
               tipo: tipoOfertaSelecionado!,
@@ -109,83 +110,114 @@ class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
         appBar: AppBar(
           toolbarHeight: 100,
           centerTitle: true,
-          title: Column(
+          automaticallyImplyLeading: false,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Cadastrar oferta'),
-              Container(
-                margin: const EdgeInsets.only(top: 12),
-                child: IndicadorEtapaWidget(
-                  etapa: etapa,
-                  largura: 140,
-                  tipoIndicadorEtapaWidget: TipoIndicadorEtapaWidget.duasEtapas,
+              SizedBox(
+                width: 40,
+                height: 40,
+                child: Tooltip(
+                  message: 'Voltar',
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50),
+                    onTap: () => Navigator.pop(context),
+                    child: Padding(
+                      padding: EdgeInsets.all(5),
+                      child: FittedBox(child: Icon(Icons.arrow_back)),
+                    ),
+                  ),
                 ),
               ),
+              Column(
+                children: [
+                  const Text('Cadastrar oferta'),
+                  Container(
+                    margin: const EdgeInsets.only(top: 12),
+                    child: IndicadorEtapaWidget(
+                      etapa: etapa,
+                      largura: 140,
+                      tipoIndicadorEtapaWidget:
+                          TipoIndicadorEtapaWidget.duasEtapas,
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(width: 40),
             ],
           ),
           backgroundColor: Cores.laranjaPrincipal,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18),
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 12),
-                  child: buildFormularioFromEtapa(),
-                ),
-                if (etapa == 1)
+        body: Container(
+          constraints: BoxConstraints.expand(),
+          color: Cores.cinzaBackground,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Column(
+                children: [
                   Container(
-                    margin: const EdgeInsets.only(top: 65, bottom: 30),
-                    child: BotaoElevadoWidget(
-                      nome: 'Continuar',
-                      cor: Cores.laranjaPrincipal,
-                      corTexto: Colors.white,
-                      aoPressionar: aoSubmeterEt1,
-                      tamanhoFonte: 18,
-                      largura: double.infinity,
-                      altura: 48,
-                      raioBorda: 8,
-                    ),
-                  )
-                else if (etapa == 2)
-                  Container(
-                    margin: const EdgeInsets.only(top: 65, bottom: 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        BotaoElevadoWidget(
-                          nome: 'Voltar',
-                          cor: Colors.white,
-                          corTexto: Colors.black,
-                          aoPressionar: () {
-                            setState(() => etapa--);
-                          },
-                          largura: 120,
-                          altura: 48,
-                          raioBorda: 8,
-                          tamanhoFonte: 16,
-                        ),
-                        const SizedBox(width: 10),
-                        BlocBuilder<SubmissaoOfertaCubit, SubmissaoOfertaState>(
-                          builder: (ctx, state) {
-                            return BotaoElevadoWidget(
-                              nome: 'Cadastrar',
-                              cor: Cores.laranjaPrincipal,
-                              corTexto: Colors.white,
-                              aoPressionar: aoSubmeterEt2,
-                              largura: 120,
-                              altura: 48,
-                              raioBorda: 8,
-                              tamanhoFonte: 16,
-                              isCarregando: state is CadastrandoOfertaState,
-                              padding: EdgeInsets.symmetric(vertical: 14),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  )
-              ],
+                    margin: const EdgeInsets.only(top: 12),
+                    child: buildFormularioFromEtapa(),
+                  ),
+                  if (etapa == 1)
+                    Container(
+                      margin: const EdgeInsets.only(top: 65, bottom: 30),
+                      child: BotaoElevadoWidget(
+                        nome: 'Continuar',
+                        cor: Cores.laranjaPrincipal,
+                        corTexto: Colors.white,
+                        aoPressionar: aoSubmeterEt1,
+                        tamanhoFonte: 18,
+                        largura: double.infinity,
+                        altura: 48,
+                        raioBorda: 8,
+                      ),
+                    )
+                  else if (etapa == 2)
+                    Container(
+                      margin: const EdgeInsets.only(top: 65, bottom: 30),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          BotaoElevadoWidget(
+                            nome: 'Voltar',
+                            cor: Colors.white,
+                            corTexto: Colors.black,
+                            aoPressionar: () {
+                              setState(() => etapa--);
+                            },
+                            largura: 120,
+                            altura: 48,
+                            raioBorda: 8,
+                            tamanhoFonte: 16,
+                          ),
+                          const SizedBox(width: 10),
+                          BlocConsumer<SubmissaoOfertaCubit,
+                              SubmissaoOfertaState>(
+                            listenWhen: (prev, cur) =>
+                                cur is OfertaCadastradaState,
+                            listener: (ctx, state) => Navigator.pop(context),
+                            builder: (ctx, state) {
+                              return BotaoElevadoWidget(
+                                nome: 'Cadastrar',
+                                cor: Cores.laranjaPrincipal,
+                                corTexto: Colors.white,
+                                aoPressionar: aoSubmeterEt2,
+                                largura: 120,
+                                altura: 48,
+                                raioBorda: 8,
+                                tamanhoFonte: 16,
+                                isCarregando: state is CadastrandoOfertaState,
+                                padding: EdgeInsets.symmetric(vertical: 14),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                ],
+              ),
             ),
           ),
         ),

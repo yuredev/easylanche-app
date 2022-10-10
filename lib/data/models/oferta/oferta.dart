@@ -8,7 +8,9 @@ part 'oferta.g.dart';
 class Oferta {
   final int? id;
   final String telefone;
+  final String nome;
   final String descricao;
+  @JsonKey(ignore: true)
   final TipoOferta tipo;
   @JsonKey(name: 'status')
   final bool isAtivo;
@@ -17,13 +19,14 @@ class Oferta {
   const Oferta({
     this.id,
     required this.telefone,
+    required this.nome, 
     required this.descricao,
-    required this.tipo,
+    this.tipo = TipoOferta.outro,
     required this.isAtivo,
     required this.valor,
   });
 
-  Map<String, dynamic> toJson() => _$OfertaToJson(this);
+  factory Oferta.fromJson(Map<String, dynamic> json) => _$OfertaFromJson(json);
 
-  static String fromTipoJson(Map json) => json['descricao'];
+  Map<String, dynamic> toJson() => _$OfertaToJson(this);
 }

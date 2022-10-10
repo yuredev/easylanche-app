@@ -1,84 +1,92 @@
-import 'package:flutter/cupertino.dart';
+import 'package:easylanche/presentation/widgets/shared/barra_cinza_widget.dart';
+import 'package:easylanche/presentation/widgets/shared/shimmer_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class CardOfertaWidget extends StatelessWidget {
-  final String title;
-  final String descricao;
-  final double value;
+  final String? titulo;
+  final String? descricao;
+  final double? valor;
+  final bool isCarregando;
 
-  CardOfertaWidget({
-    required this.title,
+  const CardOfertaWidget({
+    required this.titulo,
     required this.descricao,
-    required this.value,
+    required this.valor,
+    this.isCarregando = false,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Color.fromARGB(255, 246, 239, 236),
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(
-            color: Color.fromARGB(255, 0, 0, 0).withOpacity(0.5),
-            blurRadius: 3,
-            offset: Offset(0, 1),
+    final conteudo = Container(
+      margin: EdgeInsets.all(14),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Image.asset(
+              'assets/images/salgado.jpg',
+              width: 100,
+              height: 100,
+            ),
           ),
-        ],
-      ),
-      width: double.infinity,
-      child: Container(
-        margin: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: Image.asset(
-                'assets/images/salgado.jpg',
-                width: 100,
-                height: 100,
-                fit: BoxFit.contain,
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      isCarregando
+                          ? BarraCinzaWidget(altura: 18, largura: 80)
+                          : Text(
+                              titulo!,
+                              style: TextStyle(
+                                fontFamily: 'RobotoMono',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
+                            ),
+                      Icon(Icons.arrow_forward_ios),
+                    ],
+                  ),
+                  isCarregando
+                      ? BarraCinzaWidget(altura: 14, largura: 140)
+                      : Text(
+                          descricao!,
+                          style: TextStyle(
+                            color: Colors.grey[400],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                  isCarregando
+                      ? Container(
+                          margin: EdgeInsets.only(top: 10),
+                          child: BarraCinzaWidget(altura: 16, largura: 60),
+                        )
+                      : Text(
+                          "R\$ ${valor.toString()}0",
+                          style: TextStyle(
+                            height: 2,
+                            fontSize: 15,
+                            color: Colors.green[300],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                ],
               ),
             ),
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.only(left: 18),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(title,
-                            style: TextStyle(
-                              fontFamily: 'RobotoMono',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            )),
-                        Icon(Icons.arrow_forward_ios),
-                      ],
-                    ),
-                    Text(descricao,
-                        style: TextStyle(
-                          color: Colors.grey[400],
-                          fontWeight: FontWeight.bold,
-                        )),
-                    Text("R\$ ${value.toString()}0",
-                        style: TextStyle(
-                          height: 2,
-                          fontSize: 15,
-                          color: Colors.green[300],
-                          fontWeight: FontWeight.bold,
-                        )),
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
+    );
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: isCarregando ? ShimmerWidget(child: conteudo) : conteudo,
     );
   }
 }

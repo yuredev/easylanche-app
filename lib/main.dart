@@ -1,4 +1,5 @@
-import 'package:easylanche/core/bindings.dart';
+import 'package:easylanche/core/ambiente.dart';
+import 'package:easylanche/core/instancias.dart';
 import 'package:easylanche/core/rotas.dart';
 import 'package:easylanche/presentation/widgets/shared/alertas_app_handler.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  Instancias.inicializar();
+  const configAmbiente = ConfiguracaoAmbiente(
+    urlAPI: 'https://ofertasfood.herokuapp.com',
+  );
+  Instancias.inicializar(configAmbiente);
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -16,17 +19,20 @@ void main() async {
   ]);
 
   runApp(
-    MaterialApp(
-      supportedLocales: [const Locale('pt', 'BR')],
-      localizationsDelegates: [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      debugShowCheckedModeBanner: false,
-      initialRoute: Rotas.cadastroOferta,
-      onGenerateRoute: Rotas.onGenerateRoute,
-      builder: (context, widget) => EasylancheApp(child: widget),
+    Ambiente(
+      configAmbiente,
+      child: MaterialApp(
+        supportedLocales: [const Locale('pt', 'BR')],
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        debugShowCheckedModeBanner: false,
+        initialRoute: Rotas.feed,
+        onGenerateRoute: Rotas.onGenerateRoute,
+        builder: (context, widget) => EasylancheApp(child: widget),
+      ),
     ),
   );
 }
