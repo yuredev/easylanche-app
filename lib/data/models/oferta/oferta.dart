@@ -10,6 +10,7 @@ class Oferta {
   final String telefone;
   final String nome;
   final String descricao;
+  @JsonKey(defaultValue: TipoOferta.outro)
   final TipoOferta tipo;
   @JsonKey(name: 'status')
   final bool isAtivo;
@@ -18,7 +19,7 @@ class Oferta {
   const Oferta({
     this.id,
     required this.telefone,
-    required this.nome, 
+    required this.nome,
     required this.descricao,
     required this.tipo,
     required this.isAtivo,

@@ -7,4 +7,8 @@ abstract class Mapeamentos {
     TipoOferta.doce: 'Doce',
     TipoOferta.outro: 'Outro',
   };
+  static const imagensTipoOfeta = {
+    TipoOferta.salgado: 'assets/images/salgado.jpg',
+    TipoOferta.doce: 'assets/images/doce.png',
+  };
 }

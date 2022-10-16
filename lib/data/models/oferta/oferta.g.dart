@@ -11,7 +11,8 @@ Oferta _$OfertaFromJson(Map<String, dynamic> json) => Oferta(
       telefone: json['telefone'] as String,
       nome: json['nome'] as String,
       descricao: json['descricao'] as String,
-      tipo: $enumDecode(_$TipoOfertaEnumMap, json['tipo']),
+      tipo: $enumDecodeNullable(_$TipoOfertaEnumMap, json['tipo']) ??
+          TipoOferta.outro,
       isAtivo: json['status'] as bool,
       valor: (json['valor'] as num).toDouble(),
     );
@@ -28,7 +29,7 @@ Map<String, dynamic> _$OfertaToJson(Oferta instance) => <String, dynamic>{
 
 const _$TipoOfertaEnumMap = {
   TipoOferta.salgado: 'salgado',
-  TipoOferta.doce: 'salgado',
+  TipoOferta.doce: 'doce',
   TipoOferta.bebida: 'bebida',
   TipoOferta.outro: 'outro',
 };
