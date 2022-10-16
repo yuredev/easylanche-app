@@ -1,4 +1,3 @@
-import 'package:easylanche/logic/cubits/alertas_app/alertas_app_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/listagem/listagem_oferta_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/submissao/submissao_oferta_cubit.dart';
 import 'package:easylanche/presentation/pages/cadastro_oferta_page.dart';
