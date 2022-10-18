@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 abstract class Cores {
-  static const laranjaPrincipal = Color.fromARGB(255, 255, 173, 51);
+  static const laranjaPrincipal = Color(0xFFFFAD33);
   static const textFieldBackground = Color(0xFFFEFEFE);
   static const cinzaEscuro = Color(0xFFF2F2F2);
   static const textField = Color(0xFF666666);
-  static const cinzaSubtitulo = Color(0xFF7B819D);
+  static const cinzaSubtitulo = Color(0xFF7B8181);
   static const cinzaTextField = Color(0xFFBDBDBD);
   static const cinzaShimmer = Color(0xFFEBEBEB);
   static const cinzaEscuroBordaInput = Color(0xFFD9D9D9);

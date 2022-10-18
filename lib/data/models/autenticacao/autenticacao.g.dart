@@ -8,20 +8,20 @@ part of 'autenticacao.dart';
 
 RequisicaoAuthDTO _$RequisicaoAuthDTOFromJson(Map<String, dynamic> json) =>
     RequisicaoAuthDTO(
-      json['login'] as String,
-      json['senha'] as String,
+      json['username'] as String,
+      json['password'] as String,
     );
 
 Map<String, dynamic> _$RequisicaoAuthDTOToJson(RequisicaoAuthDTO instance) =>
     <String, dynamic>{
-      'login': instance.login,
-      'senha': instance.senha,
+      'username': instance.login,
+      'password': instance.senha,
     };
 
 RespostaAuthDTO _$RespostaAuthDTOFromJson(Map<String, dynamic> json) =>
     RespostaAuthDTO(
-      json['token'] as String,
       Usuario.fromJson(json['usuario'] as Map<String, dynamic>),
+      json['token'] as String,
     );
 
 Map<String, dynamic> _$RespostaAuthDTOToJson(RespostaAuthDTO instance) =>

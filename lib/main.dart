@@ -1,6 +1,7 @@
 import 'package:easylanche/core/ambiente.dart';
 import 'package:easylanche/core/instancias.dart';
 import 'package:easylanche/core/rotas.dart';
+import 'package:easylanche/presentation/tema.dart';
 import 'package:easylanche/presentation/widgets/shared/alertas_app_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,9 +10,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   const configAmbiente = ConfiguracaoAmbiente(
-    urlAPI: 'https://ofertasfood.herokuapp.com',
+    urlAPI: 'https://tadsfoodapi.herokuapp.com',
   );
-  Instancias.inicializar(configAmbiente);
+  await Instancias.inicializar(configAmbiente);
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -32,6 +33,7 @@ void main() async {
         initialRoute: Rotas.feed,
         onGenerateRoute: Rotas.onGenerateRoute,
         builder: (context, widget) => EasylancheApp(child: widget),
+        theme: Tema.temaClaro,
       ),
     ),
   );

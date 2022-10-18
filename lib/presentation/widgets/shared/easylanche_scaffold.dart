@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class EasylancheScaffold extends StatelessWidget {
   final Color corStatusBar;
   final Widget child;
-  final Widget? drawerDireita;
+  final Widget? drawer;
   final Widget? floatingActionButton;
   final FloatingActionButtonLocation? floatingActionButtonLocation;
 
@@ -13,7 +13,7 @@ class EasylancheScaffold extends StatelessWidget {
     Key? key,
     required this.child,
     this.corStatusBar = Cores.laranjaPrincipal,
-    this.drawerDireita,
+    this.drawer,
     this.floatingActionButton,
     this.floatingActionButtonLocation,
   }) : super(key: key);
@@ -23,7 +23,7 @@ class EasylancheScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBarVaziaWidget(corStatusBar: corStatusBar),
       body: child,
-      endDrawer: drawerDireita,
+      endDrawer: drawer,
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
     );
