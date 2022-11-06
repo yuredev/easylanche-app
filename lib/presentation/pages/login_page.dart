@@ -1,183 +1,283 @@
-// ignore_for_file: unnecessary_this
-
-import 'package:easylanche/core/constants/cores.dart';
+import 'package:easylanche/core/rotas.dart';
+import 'package:easylanche/core/utils/alert_utils.dart';
+import 'package:easylanche/data/models/autenticacao/autenticacao.dart';
+import 'package:easylanche/logic/cubits/autenticacao/autenticacao_cubit.dart';
+import 'package:easylanche/logic/cubits/autenticacao/autenticacao_state.dart';
 import 'package:easylanche/presentation/widgets/shared/botao_elevado_widget.dart';
-import 'package:easylanche/presentation/widgets/shared/campo_texto_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../core/constants/cores.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
-  String login = '';
-  String cpf = '';
+  var possuiErroForm = false;
+  var isSenhaOculta = true;
+  String nomeUsuario = '';
   String senha = '';
-  String msgErro = '';
-  bool carregando = false;
-  bool logarComCpf = false;
-  bool esconderSenha = true;
-  FlutterSecureStorage storage = FlutterSecureStorage();
-
-  final controladorInputLogin = TextEditingController();
-  final mascaraCpf = MaskTextInputFormatter(
-    mask: '###.###.###-##',
-    filter: {
-      "#": RegExp(r'[0-9]'),
-    },
-  );
 
   @override
   void initState() {
     super.initState();
   }
 
-  void exibirLoading() {
-    setState(() {
-      msgErro = '';
-      carregando = true;
-    });
-  }
-
-  void removerLoading() {
-    setState(() {
-      carregando = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    var isTecladoAberto = MediaQuery.of(context).viewInsets.bottom > 0;
+    final double margemSuperior;
+
+    if (isTecladoAberto) {
+      margemSuperior = possuiErroForm ? 20 : 50;
+    } else {
+      margemSuperior = 100;
+    }
+
     return Scaffold(
-        body: SingleChildScrollView(
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Stack(alignment: Alignment.center, children: [
-          Container(
-            width: MediaQuery.of(context).size.width,
-            transform: Matrix4.translationValues(0.0, -30.0, 0.0),
-            child: Image.asset(
-              'assets/images/barra_arredondada_login.png',
-              fit: BoxFit.cover,
-            ),
-          ),
-          Container(
-            alignment: Alignment.center,
+      body: LayoutBuilder(
+        builder: (ctx, constraints) => SingleChildScrollView(
+          child: Container(
             width: double.infinity,
-            transform: Matrix4.translationValues(0.0, -12.0, 0.0),
-            child: Text(
-              'EasyLanche',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 42,
-              ),
+            color: Cores.cinzaBackground,
+            child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    top: margemSuperior,
+                    bottom: 60,
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Tooltip(
+                        message: 'Voltar',
+                        child: SizedBox(
+                          width: 40,
+                          child: Material(
+                            color: Colors.transparent,
+                            child: FittedBox(
+                              child: IconButton(
+                                splashRadius: 25,
+                                color: Colors.grey,
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context),
+                                iconSize: 30,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const Text(
+                        'EasyLanche',
+                        style: TextStyle(
+                          fontSize: 45,
+                          color: Cores.laranjaPrincipal,
+                        ),
+                      ),
+                      const SizedBox(width: 40),
+                    ],
+                  ),
+                ),
+                ConstrainedBox(
+                  constraints:
+                      BoxConstraints(minHeight: constraints.maxHeight / 2),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 30,
+                      horizontal: 35,
+                    ),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(48),
+                        topRight: Radius.circular(48),
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              'Entrar',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 25,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12.5, top: 30),
+                          child: TextFormField(
+                            onFieldSubmitted: (_) {},
+                            autocorrect: false,
+                            autofocus: false,
+                            onChanged: (valor) {
+                              setState(() {
+                                nomeUsuario = valor;
+                              });
+                            },
+                            textCapitalization: TextCapitalization.none,
+                            style: const TextStyle(
+                              color: Cores.textField,
+                              fontSize: 16,
+                            ),
+                            enableSuggestions: false,
+                            textInputAction: TextInputAction.next,
+                            decoration: InputDecoration(
+                              suffixIcon: const Icon(Icons.person, size: 20),
+                              labelText: 'Usuário',
+                              contentPadding: const EdgeInsets.only(
+                                left: 22,
+                                top: 16,
+                                bottom: 16,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              border: OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                  width: 5,
+                                  style: BorderStyle.solid,
+                                  color: Colors.red,
+                                ),
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              labelStyle: TextStyle(color: Cores.textField),
+                              isDense: true,
+                            ),
+                          ),
+                        ),
+                        TextFormField(
+                          onFieldSubmitted: (_) {},
+                          autocorrect: false,
+                          autofocus: false,
+                          onChanged: (valor) {
+                            setState(() {
+                              senha = valor;
+                            });
+                          },
+                          textCapitalization: TextCapitalization.none,
+                          style: const TextStyle(
+                            color: Cores.textField,
+                            fontSize: 16,
+                          ),
+                          enableSuggestions: false,
+                          textInputAction: TextInputAction.next,
+                          obscureText: isSenhaOculta,
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                isSenhaOculta
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                setState(() => isSenhaOculta = !isSenhaOculta);
+                              },
+                            ),
+                            labelText: 'Senha',
+                            contentPadding: const EdgeInsets.only(
+                              left: 22,
+                              top: 16,
+                              bottom: 16,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            border: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                width: 5,
+                                style: BorderStyle.solid,
+                                color: Colors.red,
+                              ),
+                              borderRadius: BorderRadius.circular(50),
+                            ),
+                            labelStyle: TextStyle(color: Cores.textField),
+                            isDense: true,
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 24),
+                          child: BlocConsumer<AutenticacaoCubit,
+                              AutenticacaoState>(
+                            listener: (ctx, state) {
+                              if (state is UsuarioLogadoState) {
+                                Navigator.pushReplacementNamed(
+                                    context, Rotas.feed);
+                              } else if (state is ErroAutenticadoState) {
+                                AlertUtils.mostrarSnackBar(
+                                  context,
+                                  'Credenciais inválidas!',
+                                  isMensagemErro: true,
+                                );
+                              }
+                            },
+                            builder: (context, state) => BotaoElevadoWidget(
+                              largura: double.infinity,
+                              nome: 'Entrar',
+                              raioBorda: 50,
+                              cor: Cores.laranjaPrincipal,
+                              altura: 45,
+                              corTexto: Colors.white,
+                              isCarregando: state is LogandoState,
+                              aoPressionar: () {
+                                context.read<AutenticacaoCubit>().autenticar(
+                                      RequisicaoAuthDTO(nomeUsuario, senha),
+                                    );
+                              },
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 2, right: 6),
+                          alignment: Alignment.bottomRight,
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 4,
+                                vertical: 4,
+                              ),
+                            ),
+                            onPressed: () => Navigator.pushNamed(
+                              context,
+                              Rotas.cadastroUsuario,
+                            ),
+                            child: Text(
+                              'Não possui conta?',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 13.5,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 80),
+                          height: 20,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 5),
+                            child: const Text('Desenvolvido pelo TADS'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             ),
           ),
-        ]),
-        Padding(
-          padding: const EdgeInsets.only(top: 20, left: 36, bottom: 3),
-          child: Text(
-            'Entrar',
-            style: Theme.of(context).textTheme.headline3,
-          ),
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 37, bottom: 40),
-          child: Text(
-            'Bem vindo de volta',
-            style: Theme.of(context).textTheme.subtitle1,
-          ),
-        ),
-        Padding(
-            padding: const EdgeInsets.only(left: 35, right: 36),
-            child: Column(children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 14),
-                child: CampoTextoWidget(
-                  mascara: logarComCpf ? mascaraCpf : null,
-                  icone: Icon(Icons.person, size: 20),
-                  aoAlterar: (valor) {
-                    setState(() {
-                      if (logarComCpf) {
-                        cpf = valor;
-                      } else {
-                        login = valor;
-                      }
-                    });
-                  },
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(bottom: 14),
-                child: CampoTextoWidget(
-                  mascara: logarComCpf ? mascaraCpf : null,
-                  icone: Icon(Icons.person, size: 20),
-                  aoAlterar: (valor) {
-                    setState(() {
-                      if (logarComCpf) {
-                        cpf = valor;
-                      } else {
-                        login = valor;
-                      }
-                    });
-                  },
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 20),
-                child: BotaoElevadoWidget(
-                  nome: 'Entrar',
-                  cor: Cores.laranjaPrincipal,
-                  corTexto: Colors.white,
-                  largura: double.infinity,
-                  altura: 45,
-                ),
-              ),
-              msgErro != ''
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
-                      child: Center(
-                          child: Text(
-                        msgErro,
-                        style: TextStyle(color: Colors.red),
-                      )),
-                    )
-                  : SizedBox(),
-              carregando
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 15.0),
-                      child: SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 4,
-                          )),
-                    )
-                  : SizedBox(),
-            ])),
-        Container(
-          margin: const EdgeInsets.only(bottom: 10.0, top: 80),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Desenvolvido pelo TADS',
-                style: GoogleFonts.roboto(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w400,
-                  color: Cores.textField,
-                ),
-              ),
-            ],
-          ),
-        )
-      ]),
-    ));
+      ),
+    );
   }
 }

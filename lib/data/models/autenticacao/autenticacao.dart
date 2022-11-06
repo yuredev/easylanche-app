@@ -5,7 +5,9 @@ part 'autenticacao.g.dart';
 
 @JsonSerializable()
 class RequisicaoAuthDTO {
+  @JsonKey(name: 'username')
   final String login;
+  @JsonKey(name: 'password')
   final String senha;
 
   RequisicaoAuthDTO(this.login, this.senha);
@@ -21,7 +23,7 @@ class RespostaAuthDTO {
   final String token;
   final Usuario usuario;
 
-  RespostaAuthDTO(this.token, this.usuario);
+  RespostaAuthDTO(this.usuario, this.token);
 
   factory RespostaAuthDTO.fromJson(Map<String, dynamic> json) =>
       _$RespostaAuthDTOFromJson(json);

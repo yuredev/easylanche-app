@@ -75,14 +75,16 @@ class CardOfertaWidget extends StatelessWidget {
                                     fontSize: 18,
                                   ),
                                 ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                          ),
                         ],
                       ),
                       isCarregando
-                          ? BarraCinzaWidget(altura: 14, largura: 140)
+                          ? Container(
+                              margin: EdgeInsets.only(top: 2),
+                              child: const BarraCinzaWidget(
+                                altura: 14,
+                                largura: 140,
+                              ),
+                            )
                           : Text(
                               subtitulo!,
                               style: TextStyle(

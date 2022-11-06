@@ -14,10 +14,11 @@ class AutenticacaoCubit extends Cubit<AutenticacaoState> {
   final AlertasAppCubit alertasAppCubit;
 
   AutenticacaoCubit({
+    required AutenticacaoState estadoInicial,
     required this.autenticacaoRepository,
     required this.localAutenticadoRepository,
     required this.alertasAppCubit,
-  }) : super(UsuarioNaoLogadoState());
+  }) : super(estadoInicial);
 
   Future<void> ensureInitialized() async {
     final usuario = await localAutenticadoRepository.buscarUsuario();
@@ -31,9 +32,17 @@ class AutenticacaoCubit extends Cubit<AutenticacaoState> {
     try {
       emit(LogandoState());
       final resposta = await autenticacaoRepository.autenticar(authDTO);
-      await localAutenticadoRepository.salvar(resposta.usuario, resposta.token);
-      alertasAppCubit.notificar('Bem vindo ${resposta.usuario.nome}!');
-      emit(UsuarioLogadoState(resposta.usuario, resposta.token));
+      await localAutenticadoRepository.salvar(
+        resposta.usuario,
+        resposta.token,
+      );
+      alertasAppCubit.notificar('Bem vindo ${resposta.usuario.nomeUsuario}');
+      emit(
+        UsuarioLogadoState(
+          resposta.usuario,
+          resposta.token,
+        ),
+      );
     } catch (e) {
       print(e);
       late String mensagemErro;
