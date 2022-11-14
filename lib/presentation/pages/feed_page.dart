@@ -113,6 +113,7 @@ class _FeedPageState extends State<FeedPage> {
                             child: CardOfertaWidget(
                               titulo: 'oferta.nome',
                               subtitulo: 'oferta.descricao',
+                              nomeUsuario: 'oferta.usuario?.nomeUsuario',
                               valor: 5,
                               isCarregando: true,
                             ),
@@ -207,7 +208,7 @@ class _FeedPageState extends State<FeedPage> {
                                         subtitulo:
                                             'Vendido por ${oferta.usuario?.nomeUsuario}',
                                         valor: oferta.valor,
-                                        nomeUsuario: oferta.usuario?.nomeUsuario,
+                                        nomeUsuario: oferta.usuario?.nomeUsuario.toString(),
                                         tipoOferta: oferta.tipo,
                                         aoPressionar: () {
                                           if (authState is UsuarioLogadoState &&
