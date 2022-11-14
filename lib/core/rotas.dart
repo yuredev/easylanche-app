@@ -6,6 +6,7 @@ import 'package:easylanche/presentation/pages/cadastro_oferta_page.dart';
 import 'package:easylanche/presentation/pages/cadastro_usuario_page.dart';
 import 'package:easylanche/presentation/pages/feed_page.dart';
 import 'package:easylanche/presentation/pages/login_page.dart';
+import 'package:easylanche/presentation/pages/perfil_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -33,7 +34,7 @@ abstract class Rotas {
                   value: GetIt.I.get(),
                 ),
               ],
-              child: FeedPage(),
+              child: PerfilPage(),
             );
           },
         );
