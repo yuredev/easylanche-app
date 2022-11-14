@@ -11,11 +11,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
+import '../presentation/pages/info_oferta_page.dart';
+
 abstract class Rotas {
   static const feed = '/feed';
   static const cadastroOferta = '/cadastro-oferta';
   static const cadastroUsuario = '/cadastro-usuario';
   static const login = '/login';
+  static const perfil = '/perfil';
+  static const infoOferta = '/info-oferta';
 
   static Route? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -34,7 +38,7 @@ abstract class Rotas {
                   value: GetIt.I.get(),
                 ),
               ],
-              child: PerfilPage(),
+              child: FeedPage(),
             );
           },
         );
@@ -65,6 +69,24 @@ abstract class Rotas {
             return BlocProvider<SubmissaoUsuarioCubit>.value(
               value: GetIt.I.get(),
               child: CadastroUsuarioPage(),
+            );
+          },
+        );
+      case Rotas.perfil:
+        return MaterialPageRoute(
+          builder: (ctx) {
+            return BlocProvider<SubmissaoUsuarioCubit>.value(
+              value: GetIt.I.get(),
+              child: PerfilPage(),
+            );
+          },
+        );
+      case Rotas.infoOferta:
+        return MaterialPageRoute(
+          builder: (ctx) {
+            return BlocProvider<SubmissaoUsuarioCubit>.value(
+              value: GetIt.I.get(),
+              child: InfoOfertaPage(),
             );
           },
         );

@@ -5,6 +5,8 @@ import 'package:easylanche/presentation/widgets/shared/barra_cinza_widget.dart';
 import 'package:easylanche/presentation/widgets/shared/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/rotas.dart';
+
 class CardOfertaWidget extends StatelessWidget {
   final String? titulo;
   final String? subtitulo;
@@ -12,11 +14,13 @@ class CardOfertaWidget extends StatelessWidget {
   final TipoOferta? tipoOferta;
   final bool isCarregando;
   final void Function()? aoPressionar;
+  final String? nomeUsuario;
 
   const CardOfertaWidget({
     required this.titulo,
     required this.subtitulo,
     required this.valor,
+    required this.nomeUsuario,
     this.aoPressionar,
     this.tipoOferta,
     this.isCarregando = false,
@@ -28,7 +32,13 @@ class CardOfertaWidget extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
-        onTap: aoPressionar,
+        onTap: () => Navigator.pushNamed(
+                  context,
+                  Rotas.infoOferta,
+                  arguments: {
+                    'nomeUsuario': nomeUsuario,
+                  }
+                ),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 6,

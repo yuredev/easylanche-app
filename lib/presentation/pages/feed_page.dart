@@ -207,6 +207,7 @@ class _FeedPageState extends State<FeedPage> {
                                         subtitulo:
                                             'Vendido por ${oferta.usuario?.nomeUsuario}',
                                         valor: oferta.valor,
+                                        nomeUsuario: oferta.usuario?.nomeUsuario,
                                         tipoOferta: oferta.tipo,
                                         aoPressionar: () {
                                           if (authState is UsuarioLogadoState &&

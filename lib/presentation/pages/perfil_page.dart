@@ -1,4 +1,4 @@
-import 'package:easylanche/presentation/widgets/perfil/Topo_perfil_widget.dart';
+import 'package:easylanche/presentation/widgets/shared/Topo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
@@ -99,7 +99,7 @@ class _ProfileInfoRow extends StatelessWidget {
         (index) => Container(
           padding: const EdgeInsets.only(bottom: 12),
           child: CardOfertaPerfilWidget(
-            titulo: 'Nome da oferta',
+            titulo: 'oferta.titulo',
             valor: 5,
           ),
         ),
