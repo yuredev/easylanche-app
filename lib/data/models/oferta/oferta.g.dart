@@ -8,27 +8,30 @@ part of 'oferta.dart';
 
 Oferta _$OfertaFromJson(Map<String, dynamic> json) => Oferta(
       id: json['id'] as int?,
-      telefone: json['telefone'] as String,
-      nome: json['nome'] as String,
+      titulo: json['titulo'] as String,
       descricao: json['descricao'] as String,
-      tipo: $enumDecode(_$TipoOfertaEnumMap, json['tipo']),
+      tipo: $enumDecodeNullable(_$TipoOfertaEnumMap, json['tipo']) ??
+          TipoOferta.outro,
       isAtivo: json['status'] as bool,
+      usuario: json['usuario'] == null
+          ? null
+          : Usuario.fromJson(json['usuario'] as Map<String, dynamic>),
       valor: (json['valor'] as num).toDouble(),
     );
 
 Map<String, dynamic> _$OfertaToJson(Oferta instance) => <String, dynamic>{
       'id': instance.id,
-      'telefone': instance.telefone,
-      'nome': instance.nome,
+      'titulo': instance.titulo,
       'descricao': instance.descricao,
       'tipo': _$TipoOfertaEnumMap[instance.tipo]!,
       'status': instance.isAtivo,
       'valor': instance.valor,
+      'usuario': instance.usuario,
     };
 
 const _$TipoOfertaEnumMap = {
   TipoOferta.salgado: 'salgado',
-  TipoOferta.doce: 'salgado',
+  TipoOferta.doce: 'doce',
   TipoOferta.bebida: 'bebida',
   TipoOferta.outro: 'outro',
 };

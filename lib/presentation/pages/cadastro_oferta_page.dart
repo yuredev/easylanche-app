@@ -3,15 +3,15 @@ import 'package:easylanche/core/enums.dart';
 import 'package:easylanche/data/models/oferta/oferta.dart';
 import 'package:easylanche/logic/cubits/oferta/submissao/submissao_oferta_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/submissao/submissao_oferta_state.dart';
-import 'package:easylanche/presentation/widgets/cadastro_oferta/formulario_info_pessoais_widget.dart';
 import 'package:easylanche/presentation/widgets/cadastro_oferta/formulario_oferta_widget.dart';
 import 'package:easylanche/presentation/widgets/shared/botao_elevado_widget.dart';
-import 'package:easylanche/presentation/widgets/shared/indicador_etapa_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CadastroOfertaPage extends StatefulWidget {
-  const CadastroOfertaPage({Key? key}) : super(key: key);
+  final Oferta? oferta;
+
+  const CadastroOfertaPage({Key? key, this.oferta}) : super(key: key);
 
   @override
   State<CadastroOfertaPage> createState() => _CadastroOfertaPageState();
@@ -20,16 +20,32 @@ class CadastroOfertaPage extends StatefulWidget {
 class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
   var _etapa = 1;
   int get etapa => _etapa;
-  final nomeCtrl = TextEditingController();
-  final telefoneCtrl = TextEditingController();
-  final emailCtrl = TextEditingController();
   final descricaoCtrl = TextEditingController();
-  final nomeOfertaCtrl = TextEditingController();
   final valorCtrl = TextEditingController();
+  final tituloCtrl = TextEditingController();
   final chaveFormOferta = GlobalKey<FormState>();
   final chaveFormInfoPessoais = GlobalKey<FormState>();
   TipoOferta? tipoOfertaSelecionado;
   String? msgErroTipoOferta;
+
+  @override
+  void initState() {
+    super.initState();
+    if (isEdicao) {
+      popularCampos();
+    }
+  }
+
+  void popularCampos() {
+    setState(() {
+      descricaoCtrl.text = widget.oferta!.descricao;
+      valorCtrl.text = widget.oferta!.valor.toString();
+      tituloCtrl.text = widget.oferta!.titulo;
+      tipoOfertaSelecionado = widget.oferta!.tipo;
+    });
+  }
+
+  bool get isEdicao => widget.oferta != null;
 
   set etapa(int etapa) {
     if (etapa < 1 || etapa > 2) {
@@ -42,6 +58,7 @@ class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
     switch (_etapa) {
       case 1:
         return FormularioOfertaWidget(
+          tituloCtrl: tituloCtrl,
           chaveFormulario: chaveFormOferta,
           descricaoCtrl: descricaoCtrl,
           valorCtrl: valorCtrl,
@@ -54,166 +71,88 @@ class _CadastroOfertaPageState extends State<CadastroOfertaPage> {
           },
         );
       case 2:
-        return FormularioInfoPessoaisWidget(
-          nomeCtrl: nomeCtrl,
-          telefoneCtrl: telefoneCtrl,
-          chaveForm: chaveFormInfoPessoais,
-        );
+        return SizedBox();
       default:
         return SizedBox();
     }
   }
 
-  void aoSubmeterEt1() {
+  void submeter() {
     setState(() {
       msgErroTipoOferta =
           tipoOfertaSelecionado == null ? 'Informe o tipo da sua oferta' : null;
     });
     if (chaveFormOferta.currentState!.validate() && msgErroTipoOferta == null) {
-      setState(() {
-        etapa++;
-      });
-    }
-  }
-
-  void aoSubmeterEt2() {
-    if (chaveFormInfoPessoais.currentState!.validate()) {
-      context.read<SubmissaoOfertaCubit>().cadastrar(
+      context.read<SubmissaoOfertaCubit>().salvar(
             Oferta(
-              nome: nomeCtrl.text,
-              telefone: telefoneCtrl.text,
+              titulo: tituloCtrl.text,
               descricao: descricaoCtrl.text,
               tipo: tipoOfertaSelecionado!,
               isAtivo: true,
               valor: double.parse(valorCtrl.text),
+              id: widget.oferta?.id
             ),
+            isEdicao,
           );
     }
   }
 
+  void aoSubmeterEt2() {
+    // if (chaveFormInfoPessoais.currentState!.validate()) {
+    //   context.read<SubmissaoOfertaCubit>().cadastrar(
+    //         Oferta(
+    //           titulo: nomeCtrl.text,
+    //           telefone: telefoneCtrl.text,
+    //           descricao: descricaoCtrl.text,
+    //           tipo: tipoOfertaSelecionado!,
+    //           isAtivo: true,
+    //           valor: double.parse(valorCtrl.text),
+    //         ),
+    //       );
+    // }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (etapa > 1) {
-          setState(() => etapa--);
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 100,
-          centerTitle: true,
-          automaticallyImplyLeading: false,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: 100,
+        centerTitle: true,
+        title: Text(isEdicao ? 'Editar oferta' : 'Cadastrar oferta'),
+        backgroundColor: Cores.laranjaPrincipal,
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+          child: Column(
             children: [
-              SizedBox(
-                width: 40,
-                height: 40,
-                child: Tooltip(
-                  message: 'Voltar',
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(50),
-                    onTap: () => Navigator.pop(context),
-                    child: Padding(
-                      padding: EdgeInsets.all(5),
-                      child: FittedBox(child: Icon(Icons.arrow_back)),
-                    ),
-                  ),
+              Container(
+                margin: const EdgeInsets.only(top: 12),
+                child: buildFormularioFromEtapa(),
+              ),
+              Container(
+                margin: const EdgeInsets.only(
+                    top: 65, bottom: 30, left: 10, right: 10),
+                child: BlocConsumer<SubmissaoOfertaCubit, SubmissaoOfertaState>(
+                  listenWhen: (prev, cur) => cur is OfertaCadastradaState,
+                  listener: (ctx, state) => Navigator.pop(context),
+                  builder: (ctx, state) {
+                    return BotaoElevadoWidget(
+                      nome: isEdicao ? 'Atualizar' : 'Cadastrar',
+                      cor: Cores.laranjaPrincipal,
+                      corTexto: Colors.white,
+                      aoPressionar: submeter,
+                      largura: double.infinity,
+                      altura: 48,
+                      raioBorda: 8,
+                      tamanhoFonte: 16,
+                      isCarregando: state is CadastrandoOfertaState,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                    );
+                  },
                 ),
-              ),
-              Column(
-                children: [
-                  const Text('Cadastrar oferta'),
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    child: IndicadorEtapaWidget(
-                      etapa: etapa,
-                      largura: 140,
-                      tipoIndicadorEtapaWidget:
-                          TipoIndicadorEtapaWidget.duasEtapas,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(width: 40),
+              )
             ],
-          ),
-          backgroundColor: Cores.laranjaPrincipal,
-        ),
-        body: Container(
-          constraints: BoxConstraints.expand(),
-          color: Cores.cinzaBackground,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              child: Column(
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(top: 12),
-                    child: buildFormularioFromEtapa(),
-                  ),
-                  if (etapa == 1)
-                    Container(
-                      margin: const EdgeInsets.only(top: 65, bottom: 30),
-                      child: BotaoElevadoWidget(
-                        nome: 'Continuar',
-                        cor: Cores.laranjaPrincipal,
-                        corTexto: Colors.white,
-                        aoPressionar: aoSubmeterEt1,
-                        tamanhoFonte: 18,
-                        largura: double.infinity,
-                        altura: 48,
-                        raioBorda: 8,
-                      ),
-                    )
-                  else if (etapa == 2)
-                    Container(
-                      margin: const EdgeInsets.only(top: 65, bottom: 30),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          BotaoElevadoWidget(
-                            nome: 'Voltar',
-                            cor: Colors.white,
-                            corTexto: Colors.black,
-                            aoPressionar: () {
-                              setState(() => etapa--);
-                            },
-                            largura: 120,
-                            altura: 48,
-                            raioBorda: 8,
-                            tamanhoFonte: 16,
-                          ),
-                          const SizedBox(width: 10),
-                          BlocConsumer<SubmissaoOfertaCubit,
-                              SubmissaoOfertaState>(
-                            listenWhen: (prev, cur) =>
-                                cur is OfertaCadastradaState,
-                            listener: (ctx, state) => Navigator.pop(context),
-                            builder: (ctx, state) {
-                              return BotaoElevadoWidget(
-                                nome: 'Cadastrar',
-                                cor: Cores.laranjaPrincipal,
-                                corTexto: Colors.white,
-                                aoPressionar: aoSubmeterEt2,
-                                largura: 120,
-                                altura: 48,
-                                raioBorda: 8,
-                                tamanhoFonte: 16,
-                                isCarregando: state is CadastrandoOfertaState,
-                                padding: EdgeInsets.symmetric(vertical: 14),
-                              );
-                            },
-                          ),
-                        ],
-                      ),
-                    )
-                ],
-              ),
-            ),
           ),
         ),
       ),

@@ -1,5 +1,5 @@
+import 'package:easylanche/presentation/widgets/shared/dialog_informativo_widget.dart';
 import 'package:flutter/material.dart';
-
 
 abstract class AlertUtils {
   static void mostrarSnackBar(
@@ -108,5 +108,19 @@ abstract class AlertUtils {
       },
     );
     return result;
+  }
+
+  static Future<void> mostrarDialogInformativo(
+    BuildContext context, {
+    required String texto,
+    required String nomeImagem,
+  }) async {
+    await showDialog(
+      context: context,
+      builder: (ctx) => DialogInformativoWidget(
+        nomeImagem: nomeImagem,
+        texto: texto,
+      ),
+    );
   }
 }

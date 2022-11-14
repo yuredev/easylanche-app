@@ -32,7 +32,7 @@ class _OfertaRepository implements OfertaRepository {
     )
             .compose(
               _dio.options,
-              '',
+              '/comida',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -44,7 +44,10 @@ class _OfertaRepository implements OfertaRepository {
   }
 
   @override
-  Future<Oferta> cadastrar(oferta) async {
+  Future<Oferta> cadastrar(
+    id,
+    oferta,
+  ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -58,13 +61,61 @@ class _OfertaRepository implements OfertaRepository {
     )
             .compose(
               _dio.options,
-              '',
+              '/usuario/${id}/comida',
               queryParameters: queryParameters,
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = Oferta.fromJson(_result.data!);
     return value;
+  }
+
+  @override
+  Future<Oferta> atualizar(
+    id,
+    oferta,
+  ) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(oferta.toJson());
+    final _result =
+        await _dio.fetch<Map<String, dynamic>>(_setStreamType<Oferta>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/comida/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = Oferta.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<void> remover(id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/comida/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    return null;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

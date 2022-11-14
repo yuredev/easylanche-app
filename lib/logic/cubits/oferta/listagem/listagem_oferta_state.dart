@@ -17,10 +17,10 @@ class OfertasListadasState extends Equatable implements ListagemOfertaState {
 }
 
 class ErroAoListarOfertasState extends Equatable  implements ListagemOfertaState {
-  final String mensagemErro;
+  final bool isErroConexao;
 
-  const ErroAoListarOfertasState(this.mensagemErro);
+  const ErroAoListarOfertasState(this.isErroConexao);
 
   @override
-  List<Object?> get props => [mensagemErro];
+  List<Object?> get props => [isErroConexao];
 }
