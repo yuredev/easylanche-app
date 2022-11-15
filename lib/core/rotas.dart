@@ -75,9 +75,10 @@ abstract class Rotas {
       case Rotas.perfil:
         return MaterialPageRoute(
           builder: (ctx) {
-            return BlocProvider<SubmissaoUsuarioCubit>.value(
+            return BlocProvider<ListagemOfertaCubit>.value(
               value: GetIt.I.get(),
-              child: PerfilPage(),
+              child:
+                  PerfilPage(usuario: (settings.arguments! as Map)['usuario']),
             );
           },
         );
@@ -86,7 +87,7 @@ abstract class Rotas {
           builder: (ctx) {
             return BlocProvider<SubmissaoUsuarioCubit>.value(
               value: GetIt.I.get(),
-              child: InfoOfertaPage(),
+              child: InfoOfertaPage(oferta: (settings.arguments! as Map)['oferta']),
             );
           },
         );

@@ -6,6 +6,7 @@ import 'package:easylanche/logic/cubits/usuario/submissao/submissao_usuario_stat
 import 'package:easylanche/presentation/widgets/shared/botao_elevado_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import '../../../core/constants/cores.dart';
 
 class CadastroUsuarioPage extends StatefulWidget {
@@ -21,8 +22,16 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
   String? senha;
   String? nomeUsuario;
   String? nome;
-  String? telefone;
+  String? telefone = '5584';
   String? confirmacaoSenha;
+  final mascaraTelefone = MaskTextInputFormatter(
+    mask: '#############',
+    filter: {
+      "#": RegExp(
+        r'^[0-9]+$',
+      )
+    },
+  );
 
   @override
   void initState() {
@@ -204,6 +213,7 @@ class _CadastroUsuarioPageState extends State<CadastroUsuarioPage> {
                             onFieldSubmitted: (_) {},
                             autocorrect: false,
                             autofocus: false,
+                            inputFormatters: [mascaraTelefone],
                             onChanged: (valor) {
                               setState(() {
                                 telefone = valor;

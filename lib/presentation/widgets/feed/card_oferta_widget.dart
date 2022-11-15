@@ -1,6 +1,7 @@
 import 'package:easylanche/core/constants/cores.dart';
 import 'package:easylanche/core/constants/mapeamentos.dart';
 import 'package:easylanche/core/enums.dart';
+import 'package:easylanche/data/models/oferta/oferta.dart';
 import 'package:easylanche/presentation/widgets/shared/barra_cinza_widget.dart';
 import 'package:easylanche/presentation/widgets/shared/shimmer_widget.dart';
 import 'package:flutter/material.dart';
@@ -8,22 +9,14 @@ import 'package:flutter/material.dart';
 import '../../../core/rotas.dart';
 
 class CardOfertaWidget extends StatelessWidget {
-  final String? titulo;
-  final String? subtitulo;
-  final double? valor;
-  final TipoOferta? tipoOferta;
+  final Oferta? oferta;
   final bool isCarregando;
   final void Function()? aoPressionar;
-  final String? nomeUsuario;
 
   const CardOfertaWidget({
-    required this.titulo,
-    required this.subtitulo,
-    required this.valor,
-    required this.nomeUsuario,
     this.aoPressionar,
-    this.tipoOferta,
     this.isCarregando = false,
+    this.oferta,
   });
 
   @override
@@ -33,12 +26,12 @@ class CardOfertaWidget extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () => Navigator.pushNamed(
-                  context,
-                  Rotas.infoOferta,
-                  arguments: {
-                    'nomeUsuario': nomeUsuario,
-                  }
-                ),
+          context,
+          Rotas.infoOferta,
+          arguments: {
+            'oferta': oferta,
+          },
+        ),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 6,
@@ -52,19 +45,21 @@ class CardOfertaWidget extends StatelessWidget {
                 ),
                 height: 100,
                 width: 100,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: FittedBox(
-                    child: ![TipoOferta.salgado, TipoOferta.doce]
-                            .contains(tipoOferta)
-                        ? Icon(Icons.fastfood, color: Colors.grey)
-                        : CircleAvatar(
-                            backgroundImage: AssetImage(
-                              Mapeamentos.imagensTipoOfeta[tipoOferta]!,
-                            ),
-                          ),
-                  ),
-                ),
+                child: isCarregando
+                    ? Icon(Icons.fastfood, color: Colors.grey, size: 70)
+                    : Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: FittedBox(
+                          child: ![TipoOferta.salgado, TipoOferta.doce]
+                                  .contains(oferta!.tipo)
+                              ? Icon(Icons.fastfood, color: Colors.grey)
+                              : CircleAvatar(
+                                  backgroundImage: AssetImage(
+                                    Mapeamentos.imagensTipoOfeta[oferta!.tipo]!,
+                                  ),
+                                ),
+                        ),
+                      ),
               ),
               Expanded(
                 child: Container(
@@ -78,7 +73,7 @@ class CardOfertaWidget extends StatelessWidget {
                           isCarregando
                               ? BarraCinzaWidget(altura: 18, largura: 80)
                               : Text(
-                                  titulo!,
+                                  oferta!.titulo,
                                   style: TextStyle(
                                     fontFamily: 'RobotoMono',
                                     fontWeight: FontWeight.bold,
@@ -96,7 +91,7 @@ class CardOfertaWidget extends StatelessWidget {
                               ),
                             )
                           : Text(
-                              subtitulo!,
+                              oferta!.descricao,
                               style: TextStyle(
                                 color: Cores.laranjaPrincipal,
                                 fontWeight: FontWeight.bold,
@@ -108,7 +103,7 @@ class CardOfertaWidget extends StatelessWidget {
                               child: BarraCinzaWidget(altura: 16, largura: 60),
                             )
                           : Text(
-                              "R\$ ${valor.toString()}0",
+                              "R\$ ${oferta!.valor.toString()}0",
                               style: TextStyle(
                                 height: 2,
                                 fontSize: 15,

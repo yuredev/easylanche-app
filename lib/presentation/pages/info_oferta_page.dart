@@ -1,27 +1,48 @@
+import 'dart:io';
+
+import 'package:easylanche/core/utils/alert_utils.dart';
+import 'package:easylanche/data/models/oferta/oferta.dart';
 import 'package:easylanche/presentation/widgets/shared/Topo_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_whatsapp/open_whatsapp.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import '../../core/constants/cores.dart';
 import '../../core/rotas.dart';
-import '../../logic/cubits/autenticacao/autenticacao_cubit.dart';
-import '../../logic/cubits/autenticacao/autenticacao_state.dart';
-import '../widgets/feed/card_oferta_widget.dart';
-import '../widgets/feed/drawer_conta_widget.dart';
-import '../widgets/perfil/card_oferta_perfil_widget.dart';
 import '../widgets/shared/easylanche_scaffold.dart';
 
-class InfoOfertaPage extends StatelessWidget {
-  const InfoOfertaPage({Key? key}) : super(key: key);
+class InfoOfertaPage extends StatefulWidget {
+  final Oferta oferta;
+
+  const InfoOfertaPage({
+    Key? key,
+    required this.oferta,
+  }) : super(key: key);
+
+  @override
+  State<InfoOfertaPage> createState() => _InfoOfertaPageState();
+}
+
+class _InfoOfertaPageState extends State<InfoOfertaPage> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  void abrirZap(int telefone) async {
+    try {
+      await FlutterOpenWhatsapp.sendSingleMessage(telefone.toString(), '');
+    } catch (e) {
+      print(e);
+      var a = '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return EasylancheScaffold(
       child: Column(
         children: [
-          const Expanded(flex: 1, child: TopoPerfilWidget()),
+          TopoPerfilWidget(),
           Expanded(
             flex: 2,
             child: Padding(
@@ -48,9 +69,12 @@ class InfoOfertaPage extends StatelessWidget {
                         onTap: () => Navigator.pushNamed(
                           context,
                           Rotas.perfil,
+                          arguments: {
+                            'usuario': widget.oferta.usuario,
+                          },
                         ),
                         child: Text(
-                          'Fulano',
+                          widget.oferta.usuario!.nome,
                           style: TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 16,
@@ -59,19 +83,19 @@ class InfoOfertaPage extends StatelessWidget {
                       )
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: 280,
-                    child: Text(
-                      "Local: Prédio de Informatica",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                  // const SizedBox(height: 12),
+                  // SizedBox(
+                  //   width: 280,
+                  //   child: Text(
+                  //     "Local: Prédio de Informatica",
+                  //     textAlign: TextAlign.center,
+                  //     style: TextStyle(
+                  //       fontSize: 12,
+                  //       color: Colors.grey,
+                  //       fontWeight: FontWeight.bold,
+                  //     ),
+                  //   ),
+                  // ),
                   const SizedBox(height: 12),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -94,7 +118,10 @@ class InfoOfertaPage extends StatelessWidget {
                       SizedBox(
                         width: 320,
                         child: FloatingActionButton.extended(
-                          onPressed: () {},
+                          onPressed: () {
+                            abrirZap(
+                                int.parse(widget.oferta.usuario!.telefone));
+                          },
                           heroTag: 'whatsApp',
                           elevation: 0,
                           hoverColor: Colors.grey,

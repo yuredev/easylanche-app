@@ -18,7 +18,6 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 
 import '../widgets/feed/card_oferta_widget.dart';
-import '../widgets/feed/drawer_widget.dart';
 
 class FeedPage extends StatefulWidget {
   @override
@@ -110,13 +109,7 @@ class _FeedPageState extends State<FeedPage> {
                           5,
                           (index) => Container(
                             padding: const EdgeInsets.only(bottom: 12),
-                            child: CardOfertaWidget(
-                              titulo: 'oferta.nome',
-                              subtitulo: 'oferta.descricao',
-                              nomeUsuario: 'oferta.usuario?.nomeUsuario',
-                              valor: 5,
-                              isCarregando: true,
-                            ),
+                            child: CardOfertaWidget(isCarregando: true),
                           ),
                         ),
                       );
@@ -204,12 +197,7 @@ class _FeedPageState extends State<FeedPage> {
                                         ],
                                       ),
                                       child: CardOfertaWidget(
-                                        titulo: oferta.titulo,
-                                        subtitulo:
-                                            'Vendido por ${oferta.usuario?.nomeUsuario}',
-                                        valor: oferta.valor,
-                                        nomeUsuario: oferta.usuario?.nomeUsuario.toString(),
-                                        tipoOferta: oferta.tipo,
+                                        oferta: oferta,
                                         aoPressionar: () {
                                           if (authState is UsuarioLogadoState &&
                                               oferta.usuario!.id ==
