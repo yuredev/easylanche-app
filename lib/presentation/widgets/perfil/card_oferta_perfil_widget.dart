@@ -5,22 +5,16 @@ import 'package:easylanche/presentation/widgets/shared/barra_cinza_widget.dart';
 import 'package:easylanche/presentation/widgets/shared/shimmer_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../../core/rotas.dart';
-
-class CardOfertaWidget extends StatelessWidget {
+class CardOfertaPerfilWidget extends StatelessWidget {
   final String? titulo;
-  final String? subtitulo;
   final double? valor;
   final TipoOferta? tipoOferta;
   final bool isCarregando;
   final void Function()? aoPressionar;
-  final String? nomeUsuario;
 
-  const CardOfertaWidget({
+  const CardOfertaPerfilWidget({
     required this.titulo,
-    required this.subtitulo,
     required this.valor,
-    required this.nomeUsuario,
     this.aoPressionar,
     this.tipoOferta,
     this.isCarregando = false,
@@ -32,13 +26,7 @@ class CardOfertaWidget extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
-        onTap: () => Navigator.pushNamed(
-                  context,
-                  Rotas.infoOferta,
-                  arguments: {
-                    'nomeUsuario': nomeUsuario,
-                  }
-                ),
+        onTap: aoPressionar,
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: 6,
@@ -50,8 +38,8 @@ class CardOfertaWidget extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                 ),
-                height: 100,
-                width: 100,
+                height: 75,
+                width: 75,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: FittedBox(
@@ -89,21 +77,6 @@ class CardOfertaWidget extends StatelessWidget {
                       ),
                       isCarregando
                           ? Container(
-                              margin: EdgeInsets.only(top: 2),
-                              child: const BarraCinzaWidget(
-                                altura: 14,
-                                largura: 140,
-                              ),
-                            )
-                          : Text(
-                              subtitulo!,
-                              style: TextStyle(
-                                color: Cores.laranjaPrincipal,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                      isCarregando
-                          ? Container(
                               margin: EdgeInsets.only(top: 10),
                               child: BarraCinzaWidget(altura: 16, largura: 60),
                             )
@@ -112,7 +85,7 @@ class CardOfertaWidget extends StatelessWidget {
                               style: TextStyle(
                                 height: 2,
                                 fontSize: 15,
-                                color: Colors.grey,
+                                color: Cores.laranjaPrincipal,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
