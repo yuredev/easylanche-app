@@ -3,8 +3,6 @@ import 'package:easylanche/core/rotas.dart';
 import 'package:easylanche/core/utils/alert_utils.dart';
 import 'package:easylanche/data/models/usuario/usuario.dart';
 import 'package:easylanche/data/repositories/oferta/oferta_repository.dart';
-import 'package:easylanche/logic/cubits/autenticacao/autenticacao_cubit.dart';
-import 'package:easylanche/logic/cubits/autenticacao/autenticacao_state.dart';
 import 'package:easylanche/logic/cubits/oferta/listagem/listagem_oferta_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/listagem/listagem_oferta_state.dart';
 import 'package:easylanche/presentation/widgets/feed/card_oferta_widget.dart';
@@ -15,7 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 
-import '../widgets/perfil/card_oferta_perfil_widget.dart';
 
 class PerfilPage extends StatelessWidget {
   final Usuario usuario;

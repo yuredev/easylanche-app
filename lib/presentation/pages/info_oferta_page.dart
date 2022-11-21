@@ -49,7 +49,32 @@ class _InfoOfertaPageState extends State<InfoOfertaPage> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
+
+                  SizedBox(
+                    width: 280,
+                    child: Text(
+                      widget.oferta.titulo,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: 280,
+                    child: Text(
+                      widget.oferta.descricao,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w300,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -83,19 +108,6 @@ class _InfoOfertaPageState extends State<InfoOfertaPage> {
                       )
                     ],
                   ),
-                  // const SizedBox(height: 12),
-                  // SizedBox(
-                  //   width: 280,
-                  //   child: Text(
-                  //     "Local: Prédio de Informatica",
-                  //     textAlign: TextAlign.center,
-                  //     style: TextStyle(
-                  //       fontSize: 12,
-                  //       color: Colors.grey,
-                  //       fontWeight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 12),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
