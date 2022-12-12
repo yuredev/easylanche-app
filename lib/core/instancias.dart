@@ -9,6 +9,7 @@ import 'package:easylanche/logic/cubits/autenticacao/autenticacao_cubit.dart';
 import 'package:easylanche/logic/cubits/autenticacao/autenticacao_state.dart';
 import 'package:easylanche/logic/cubits/oferta/listagem/listagem_oferta_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/submissao/submissao_oferta_cubit.dart';
+import 'package:easylanche/logic/cubits/usuario/relacionamento/relacionamento_cubit.dart';
 import 'package:easylanche/logic/cubits/usuario/submissao/submissao_usuario_cubit.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
@@ -25,8 +26,6 @@ abstract class Instancias {
         () => UsuarioRepository(configuracaoAmbiente.urlAPI));
     it.registerLazySingleton(
         () => AutenticadoLocalRepository(FlutterSecureStorage()));
-    it.registerLazySingleton(
-        () => ListagemOfertaCubit(ofertaRepository: it.get()));
 
     final usuario = await it.get<AutenticadoLocalRepository>().buscarUsuario();
     final token = await it.get<AutenticadoLocalRepository>().buscarToken();
@@ -41,6 +40,10 @@ abstract class Instancias {
         localAutenticadoRepository: it.get(),
       ),
     );
+    it.registerLazySingleton(() => ListagemOfertaCubit(
+          ofertaRepository: it.get(),
+          autenticacaoCubit: it.get(),
+        ));
     it.registerLazySingleton(() => SubmissaoOfertaCubit(
           alertasAppCubit: it.get(),
           ofertaRepository: it.get(),
@@ -64,5 +67,7 @@ abstract class Instancias {
           usuarioRepository: it.get(),
           usuarioLogadoRepository: it.get(),
         ));
+
+    it.registerLazySingleton(() => RelacionamentoCubit());
   }
 }

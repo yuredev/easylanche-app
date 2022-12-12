@@ -1,6 +1,7 @@
 import 'package:easylanche/logic/cubits/autenticacao/autenticacao_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/listagem/listagem_oferta_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/submissao/submissao_oferta_cubit.dart';
+import 'package:easylanche/logic/cubits/usuario/relacionamento/relacionamento_cubit.dart';
 import 'package:easylanche/logic/cubits/usuario/submissao/submissao_usuario_cubit.dart';
 import 'package:easylanche/presentation/pages/cadastro_oferta_page.dart';
 import 'package:easylanche/presentation/pages/cadastro_usuario_page.dart';
@@ -75,10 +76,19 @@ abstract class Rotas {
       case Rotas.perfil:
         return MaterialPageRoute(
           builder: (ctx) {
-            return BlocProvider<ListagemOfertaCubit>.value(
-              value: GetIt.I.get(),
-              child:
-                  PerfilPage(usuario: (settings.arguments! as Map)['usuario']),
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<ListagemOfertaCubit>.value(
+                  value: GetIt.I.get(),
+                ),
+                BlocProvider<RelacionamentoCubit>.value(
+                  value: GetIt.I.get(),
+                ),
+                BlocProvider<AutenticacaoCubit>.value(
+                  value: GetIt.I.get(),
+                ),
+              ],
+              child: PerfilPage(usuario: (settings.arguments! as Map)['usuario'])
             );
           },
         );
@@ -87,7 +97,8 @@ abstract class Rotas {
           builder: (ctx) {
             return BlocProvider<SubmissaoUsuarioCubit>.value(
               value: GetIt.I.get(),
-              child: InfoOfertaPage(oferta: (settings.arguments! as Map)['oferta']),
+              child: InfoOfertaPage(
+                  oferta: (settings.arguments! as Map)['oferta']),
             );
           },
         );

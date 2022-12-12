@@ -3,8 +3,12 @@ import 'package:easylanche/core/rotas.dart';
 import 'package:easylanche/core/utils/alert_utils.dart';
 import 'package:easylanche/data/models/usuario/usuario.dart';
 import 'package:easylanche/data/repositories/oferta/oferta_repository.dart';
+import 'package:easylanche/logic/cubits/autenticacao/autenticacao_cubit.dart';
+import 'package:easylanche/logic/cubits/autenticacao/autenticacao_state.dart';
 import 'package:easylanche/logic/cubits/oferta/listagem/listagem_oferta_cubit.dart';
 import 'package:easylanche/logic/cubits/oferta/listagem/listagem_oferta_state.dart';
+import 'package:easylanche/logic/cubits/usuario/relacionamento/relacionamento_cubit.dart';
+import 'package:easylanche/logic/cubits/usuario/relacionamento/relacionamento_state.dart';
 import 'package:easylanche/presentation/widgets/feed/card_oferta_widget.dart';
 import 'package:easylanche/presentation/widgets/shared/Topo_widget.dart';
 import 'package:easylanche/presentation/widgets/shared/ilustracao_widget.dart';
@@ -13,15 +17,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get_it/get_it.dart';
 
-
-class PerfilPage extends StatelessWidget {
+class PerfilPage extends StatefulWidget {
   final Usuario usuario;
 
   const PerfilPage({Key? key, required this.usuario}) : super(key: key);
 
   @override
+  State<PerfilPage> createState() => _PerfilPageState();
+}
+
+class _PerfilPageState extends State<PerfilPage> {
+  @override
+  void initState() {
+    super.initState();
+    context
+        .read<RelacionamentoCubit>()
+        .consultarUsuarioSeguido(widget.usuario.id!);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final tamanhoCover = MediaQuery.of(context).size.height * 0.22;
+    final estadoAuth = context.read<AutenticacaoCubit>().state;
+    final bool isProprioPerfil = estadoAuth is UsuarioLogadoState &&
+        estadoAuth.usuarioLogado.id == widget.usuario.id;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -33,43 +51,63 @@ class PerfilPage extends StatelessWidget {
                 children: [
                   const SizedBox(height: 16),
                   Text(
-                    usuario.nome,
+                    widget.usuario.nome,
                     style: TextStyle(
                       fontWeight: FontWeight.w900,
                       fontSize: 22,
                     ),
                   ),
-                  // const SizedBox(height: 12),
-                  // SizedBox(
-                  //   width: 280,
-                  //   child: Text(
-                  //     usuario,
-                  //     textAlign: TextAlign.center,
-                  //     style: TextStyle(
-                  //       fontSize: 12,
-                  //       color: Colors.grey,
-                  //       fontWeight: FontWeight.bold,
-                  //     ),
-                  //   ),
-                  // ),
-
-                  // SizedBox(
-                  //   width: 320,
-                  //   child: FloatingActionButton.extended(
-                  //     onPressed: null,
-                  //     heroTag: 'Seguir',
-                  //     elevation: 0,
-                  //     hoverColor: Colors.grey,
-                  //     label: const Text(
-                  //       "Seguir",
-                  //       style: TextStyle(
-                  //         fontWeight: FontWeight.w900,
-                  //       ),
-                  //     ),
-                  //     icon: const Icon(Icons.person_add),
-                  //   ),
-                  // ),
-                  _ListaOfertasWidget(usuario: usuario),
+                  BlocListener<RelacionamentoCubit, RelacionamentoState>(
+                    listener: (ctx, state) {
+                      if (state is UsuarioSeguidoSucessoState ||
+                          state is UsuarioParouDeSeguirSucessoState) {
+                        context
+                            .read<RelacionamentoCubit>()
+                            .consultarUsuarioSeguido(widget.usuario.id!);
+                      }
+                    },
+                    child: SizedBox(),
+                  ),
+                  if (!isProprioPerfil && estadoAuth is UsuarioLogadoState)
+                    BlocBuilder<RelacionamentoCubit, RelacionamentoState>(
+                      builder: (ctx, state) {
+                        final isUsuarioSeguido =
+                            state is UsuarioSeguidoState && state.isSeguido;
+                        return Container(
+                          margin: const EdgeInsets.only(top: 12),
+                          width: 320,
+                          child: FloatingActionButton.extended(
+                            onPressed: () {
+                              if (isUsuarioSeguido) {
+                                context
+                                    .read<RelacionamentoCubit>()
+                                    .pararDeSeguir(widget.usuario.id!);
+                              } else {
+                                context
+                                    .read<RelacionamentoCubit>()
+                                    .seguir(widget.usuario.id!);
+                              }
+                            },
+                            heroTag: isUsuarioSeguido ? 'Seguindo' : 'Seguir',
+                            elevation: 0,
+                            hoverColor: Colors.grey,
+                            label: state is ConsultandoUsuarioSeguidoState
+                                ? CircularProgressIndicator()
+                                : Text(
+                                    isUsuarioSeguido ? 'Seguindo' : 'Seguir',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                            icon: const Icon(Icons.person_add),
+                          ),
+                        );
+                      },
+                    ),
+                  _ListaOfertasWidget(
+                    usuario: widget.usuario,
+                    isProprioPerfil: isProprioPerfil,
+                  ),
                 ],
               ),
             ),
@@ -82,9 +120,13 @@ class PerfilPage extends StatelessWidget {
 
 class _ListaOfertasWidget extends StatelessWidget {
   final Usuario usuario;
+  final bool isProprioPerfil;
 
-  const _ListaOfertasWidget({Key? key, required this.usuario})
-      : super(key: key);
+  const _ListaOfertasWidget({
+    Key? key,
+    required this.usuario,
+    required this.isProprioPerfil,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -155,6 +197,7 @@ class _ListaOfertasWidget extends StatelessWidget {
                         return Container(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Slidable(
+                            enabled: isProprioPerfil,
                             endActionPane: ActionPane(
                               extentRatio: 0.25,
                               motion: ScrollMotion(),

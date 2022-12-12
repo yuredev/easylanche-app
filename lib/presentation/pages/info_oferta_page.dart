@@ -30,10 +30,11 @@ class _InfoOfertaPageState extends State<InfoOfertaPage> {
 
   void abrirZap(int telefone) async {
     try {
-      await FlutterOpenWhatsapp.sendSingleMessage(telefone.toString(), '');
+      final r = await FlutterOpenWhatsapp.sendSingleMessage(telefone.toString(), '');
+      print(r);
     } catch (e) {
       print(e);
-      var a = '';
+      AlertUtils.mostrarSnackBar(context, 'O WhatsApp não está instalado');
     }
   }
 

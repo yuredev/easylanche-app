@@ -5,6 +5,7 @@ import 'package:easylanche/data/repositories/usuario/usuario_repository.dart';
 import 'package:easylanche/logic/cubits/alertas_app/alertas_app_cubit.dart';
 import 'package:easylanche/logic/cubits/usuario/submissao/submissao_usuario_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SubmissaoUsuarioCubit extends Cubit<SubmissaoUsuarioState> {
   final AlertasAppCubit alertasAppCubit;
@@ -38,6 +39,10 @@ class SubmissaoUsuarioCubit extends Cubit<SubmissaoUsuarioState> {
     try {
       emit(CadastrandoUsuarioState());
       await usuarioLogadoRepository.remover(idUsuario);
+      final prefs = await SharedPreferences.getInstance();
+      final idsUsuario = prefs.getStringList('seguidos') ?? [];
+      idsUsuario.clear();
+      await prefs.setStringList('seguidos', idsUsuario);
       emit(UsuarioRemovidoState(idUsuario));
     } catch (e) {
       print(e);

@@ -10,7 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   const configAmbiente = ConfiguracaoAmbiente(
-    urlAPI: 'https://tadsfoodapi.herokuapp.com',
+    urlAPI: 'http://10.0.2.2:8080',
   );
   await Instancias.inicializar(configAmbiente);
 
